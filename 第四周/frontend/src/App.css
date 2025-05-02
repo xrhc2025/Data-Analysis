@@ -1,0 +1,109 @@
+
+body {
+  margin: 0;
+  background-color: #f0f2f5;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+    sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+code {
+  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
+    monospace;
+}
+
+.App {
+  width: 90vw;
+  margin: 0 auto;
+  padding: 20px;
+}
+.App h1 {
+  text-align: center;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .App-logo {
+    animation: App-logo-spin infinite 20s linear;
+  }
+}
+
+
+.input-box {
+  display: flex;
+  justify-content: space-between;
+}
+.input-box input {
+  flex: 1;
+}
+.post-box {
+  flex: 1;
+  display: flex;
+}
+.response-box {
+  flex: 1;
+  min-height: 100%;
+  background-color: #fff;
+  border-radius: 6px;
+  padding: 10px;
+  align-items: stretch
+}
+
+input {
+  padding: 12px;
+  margin: 15px;
+  margin-left: 0;
+  border: 2px solid #ccc;
+  border-radius: 8px;
+  font-size: 18px;
+  transition: all 0.3s ease;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+input:focus {
+  border-color: #40a9ff;
+  outline: none;
+}
+
+button {
+  padding: 12px 24px;
+  margin: 15px;
+  border: none;
+  border-radius: 8px;
+  background-color: #1890ff;
+  color: white;
+  font-size: 18px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+button:hover {
+  background-color: #40a9ff;
+}
+
+button:active {
+  background-color: #096dd9;
+  transform: translateY(1px);
+}
+
+
+@media (prefers-reduced-motion: no-preference) {
+  .App-logo {
+    animation: App-logo-spin infinite 20s linear;
+  }
+}
+
+.App-link {
+  color: #61dafb;
+}
+
+@keyframes App-logo-spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
