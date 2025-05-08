@@ -12,8 +12,8 @@
   },
   "scripts": {
     "start": "export NODE_OPTIONS=--openssl-legacy-provider && react-scripts start",
-    "build": "react-scripts build",
-
+    "build": "export NODE_OPTIONS=--openssl-legacy-provider && react-scripts build --output-path=dist",
+    "build:dist": "export NODE_OPTIONS=--openssl-legacy-provider && react-scripts build --output-path=dist",
     "eject": "react-scripts eject"
   },
   "eslintConfig": {

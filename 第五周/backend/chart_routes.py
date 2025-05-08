@@ -1,6 +1,7 @@
 from flask import Blueprint, jsonify
 import random
 import json
+from there import fetch_douban_top250
 
 chart_bp = Blueprint('chart', __name__)
 
@@ -11,20 +12,13 @@ def get_chart_data(chart_type):
         data = [{'name': 'A', 'value': random.randint(10, 100)},
                 {'name': 'B', 'value': random.randint(10, 100)},
                 {'name': 'C', 'value': random.randint(10, 100)}]
+        data = fetch_douban_top250()
     elif chart_type == 'bar':
         data = [{'name': 'X', 'value': random.randint(10, 100)},
                 {'name': 'Y', 'value': random.randint(10, 100)},
                 {'name': 'Z', 'value': random.randint(10, 100)}]
     elif chart_type == 'line':
         data = [{'name': str(i), 'value': random.randint(10, 100)} for i in range(10)]
-    elif chart_type == 'china_map':
-        try:
-            import os
-            file_path = os.path.join(os.path.dirname(__file__), 'china_map_data.json')
-            with open(file_path, 'r', encoding='utf-8') as f:
-                data = json.load(f)
-        except Exception as e:
-            return jsonify({'error': str(e)}), 500
     elif chart_type == 'graph':
         nodes = [{'name': f'Node {i}'} for i in range(10)]
         links = [{'source': random.randint(0, 9), 'target': random.randint(0, 9)} for _ in range(15)]

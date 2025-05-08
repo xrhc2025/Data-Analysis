@@ -16,12 +16,16 @@ const { Content, Sider } = Layout;
 function App() {
   const [chartType, setChartType] = useState('');
   const [chartData, setChartData] = useState([]);
+  // 查询到的所有数据
+  const [targetData, setTargetData] = useState([]);
 
   const fetchData = async (type) => {
     try {
       const response = await fetch(`http://127.0.0.1:5000/get_chart_data/${type}`);
+      // const response = await fetch(`http://82.156.195.106:7001/get_chart_data/${type}`);
       const data = await response.json();
-      setChartData(data || []);
+      // setChartData(data || []);
+      setTargetData(data || []);
       setChartType(type);
     } catch (error) {
       console.error('Error fetching data:', error);
@@ -30,6 +34,59 @@ function App() {
   useEffect(() => {
     fetchData('pie');
   }, []);
+  useEffect(() => {
+    // 类型变化时处理数据
+    if (chartType) {
+      // 假设你有一个函数来处理数据
+      const processedData = processData(targetData);
+      setChartData(processedData);
+    }
+  }, [chartType]);
+const processData = (data) => {
+  if (!data || !data.length) return [];
+  
+  switch (chartType) {
+    case 'pie':
+    case 'bar':
+    case 'line':
+    case 'scatter':
+    case 'radar':
+    case 'path':
+    case 'funnel':
+    case 'pictorial_bar':
+      return data.map(item => ({
+        name: item.title,
+        value: item.rating
+      }));
+    
+    case 'graph':
+      const nodes = data.map(item => ({
+        id: item.title,
+        name: item.title,
+        symbolSize: item.rating * 2,
+        category: item.genres.split(' ')[0]
+      }));
+      
+      const links = [];
+      for (let i = 0; i < nodes.length - 1; i++) {
+        links.push({
+          source: nodes[i].id,
+          target: nodes[i + 1].id
+        });
+      }
+      
+      return { nodes, links };
+    
+    case 'china_map':
+      return data.filter(item => item.countries === '中国').map(item => ({
+        name: item.title,
+        value: item.rating
+      }));
+    
+    default:
+      return data;
+  }
+};
 
   useEffect(() => {
     const chart = echarts.init(document.getElementById('chart'));
@@ -140,37 +197,37 @@ function App() {
     return () => {
       chart.dispose();
     };
-  }, [chartType, chartData]);
+  }, [chartData]);
 
   return (
     <Layout style={{ minHeight: '100vh' }}>
       <Sider>
         <Menu theme="dark" mode="inline" defaultSelectedKeys={['pie']}>
-          <Menu.Item key="pie" onClick={() => fetchData('pie')}>饼图</Menu.Item>
-          <Menu.Item key="bar" onClick={() => fetchData('bar')}>柱状图</Menu.Item>
-          <Menu.Item key="line" onClick={() => fetchData('line')}>折线图</Menu.Item>
-          <Menu.Item key="graph" onClick={() => fetchData('graph')}>关系图谱</Menu.Item>
-          <Menu.Item key="scatter" onClick={() => fetchData('scatter')}>散点图</Menu.Item>
-          <Menu.Item key="radar" onClick={() => fetchData('radar')}>雷达图</Menu.Item>
-          <Menu.Item key="path" onClick={() => fetchData('path')}>路径图</Menu.Item>
-          <Menu.Item key="k_line" onClick={() => fetchData('k_line')}>K线图</Menu.Item>
-          <Menu.Item key="tree" onClick={() => fetchData('tree')}>树图</Menu.Item>
-          <Menu.Item key="treemap" onClick={() => fetchData('treemap')}>矩形树图</Menu.Item>
-          <Menu.Item key="sunburst" onClick={() => fetchData('sunburst')}>旭日图</Menu.Item>
-          <Menu.Item key="sankey" onClick={() => fetchData('sankey')}>桑基图</Menu.Item>
-          <Menu.Item key="funnel" onClick={() => fetchData('funnel')}>漏斗图</Menu.Item>
-          <Menu.Item key="pictorial_bar" onClick={() => fetchData('pictorial_bar')}>象形柱图</Menu.Item>
+          <Menu.Item key="pie" onClick={() => setChartType('pie')}>饼图</Menu.Item>
+          <Menu.Item key="bar" onClick={() => setChartType('bar')}>柱状图</Menu.Item>
+          <Menu.Item key="line" onClick={() => setChartType('line')}>折线图</Menu.Item>
+          <Menu.Item key="graph" onClick={() => setChartType('graph')}>关系图谱</Menu.Item>
+          <Menu.Item key="scatter" onClick={() => setChartType('scatter')}>散点图</Menu.Item>
+          <Menu.Item key="radar" onClick={() => setChartType('radar')}>雷达图</Menu.Item>
+          <Menu.Item key="path" onClick={() => setChartType('path')}>路径图</Menu.Item>
+          {/*<Menu.Item key="k_line" onClick={() => setChartType('k_line')}>K线图</Menu.Item>
+          <Menu.Item key="tree" onClick={() => setChartType('tree')}>树图</Menu.Item>
+          <Menu.Item key="treemap" onClick={() => setChartType('treemap')}>矩形树图</Menu.Item>
+          <Menu.Item key="sunburst" onClick={() => setChartType('sunburst')}>旭日图</Menu.Item>
+          <Menu.Item key="sankey" onClick={() => setChartType('sankey')}>桑基图</Menu.Item>
+          <Menu.Item key="funnel" onClick={() => setChartType('funnel')}>漏斗图</Menu.Item>
+          <Menu.Item key="pictorial_bar" onClick={() => setChartType('pictorial_bar')}>象形柱图</Menu.Item>*/}
         </Menu>
       </Sider>
       <Layout style={{background: '#f0f2f5'}}>
         <Content style={{ margin: '16px' }}>
-          {chartType === 'k_line' && <KLineChart />}
+          {/*{chartType === 'k_line' && <KLineChart />}
           {chartType === 'tree' && <TreeChart />}
           {chartType === 'treemap' && <Treemap />}
           {chartType === 'sunburst' && <SunburstChart />}
           {chartType === 'sankey' && <SankeyChart />}
           {chartType === 'funnel' && <FunnelChart />}
-          {chartType === 'pictorial_bar' && <PictorialBarChart />}
+          {chartType === 'pictorial_bar' && <PictorialBarChart />}*/}
           <div id="chart" style={{ width: '100%', height: '80vh' }}></div>
         </Content>
       </Layout>
