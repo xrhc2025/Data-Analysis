@@ -1,0 +1,413 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>国风登录</title>
+    <style>
+        /* 基础样式 */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'SimSun', '宋体', serif;
+            background-color: #f8f3e6;
+            overflow: hidden;
+            height: 100vh;
+            display: flex;
+            color: #5a3921;
+        }
+        
+        /* 粒子背景 */
+        #particles-js {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+            background-color: #f8f3e6;
+        }
+        
+        /* 左右布局容器 */
+        .container {
+            display: flex;
+            width: 100%;
+            height: 100%;
+            position: relative;
+            z-index: 1;
+        }
+        
+        /* 左侧国风装饰区 */
+        .left-panel {
+            flex: 1;
+            background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 100 100"><path d="M30,10 Q50,5 70,10 Q90,15 80,30 Q70,45 50,50 Q30,55 20,40 Q10,25 30,10" fill="none" stroke="%235a3921" stroke-width="1"/></svg>') repeat;
+            background-size: 200px;
+            opacity: 0.1;
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        /* 右侧登录表单区 */
+        .right-panel {
+            width: 400px;
+            background-color: rgba(255, 253, 245, 0.9);
+            padding: 40px;
+            box-shadow: -5px 0 15px rgba(0, 0, 0, 0.1);
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+        
+        /* 标题样式 */
+        .login-title {
+            text-align: center;
+            margin-bottom: 40px;
+            position: relative;
+        }
+        
+        .login-title h2 {
+            font-size: 28px;
+            font-weight: normal;
+            letter-spacing: 5px;
+        }
+        
+        .login-title::after {
+            content: "";
+            display: block;
+            width: 80px;
+            height: 2px;
+            background: #8b5a2b;
+            margin: 15px auto;
+        }
+        
+        /* 表单样式 */
+        .login-form {
+            display: flex;
+            flex-direction: column;
+            gap: 25px;
+        }
+        
+        .form-group {
+            position: relative;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-size: 16px;
+            letter-spacing: 1px;
+        }
+        
+        .form-group input {
+            width: 100%;
+            padding: 12px 15px;
+            border: 1px solid #d4b483;
+            border-radius: 4px;
+            background-color: rgba(255, 253, 245, 0.7);
+            font-family: 'SimSun', '宋体', serif;
+            font-size: 16px;
+            transition: all 0.3s;
+        }
+        
+        .form-group input:focus {
+            outline: none;
+            border-color: #8b5a2b;
+            box-shadow: 0 0 0 2px rgba(139, 90, 43, 0.2);
+        }
+        
+        /* 按钮样式 */
+        .btn {
+            padding: 12px;
+            background-color: #8b5a2b;
+            color: #fff;
+            border: none;
+            border-radius: 4px;
+            font-family: 'SimSun', '宋体', serif;
+            font-size: 16px;
+            letter-spacing: 2px;
+            cursor: pointer;
+            transition: all 0.3s;
+            margin-top: 10px;
+        }
+        
+        .btn:hover {
+            background-color: #6d4622;
+        }
+        
+        /* 链接样式 */
+        .links {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 15px;
+        }
+        
+        .links a {
+            color: #8b5a2b;
+            text-decoration: none;
+            font-size: 14px;
+            position: relative;
+        }
+        
+        .links a:hover {
+            text-decoration: underline;
+        }
+        
+        /* 樱花元素 */
+        .sakura {
+            position: absolute;
+            background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12,2C13.1,2 14,2.9 14,4C14,5.1 13.1,6 12,6C10.9,6 10,5.1 10,4C10,2.9 10.9,2 12,2M15.5,8C16.3,8 17,8.7 17,9.5C17,10.3 16.3,11 15.5,11C14.7,11 14,10.3 14,9.5C14,8.7 14.7,8 15.5,8M8.5,8C9.3,8 10,8.7 10,9.5C10,10.3 9.3,11 8.5,11C7.7,11 7,10.3 7,9.5C7,8.7 7.7,8 8.5,8M12,11C13.1,11 14,11.9 14,13C14,14.1 13.1,15 12,15C10.9,15 10,14.1 10,13C10,11.9 10.9,11 12,11M19,17V19H5V17C5,14.8 8.1,13 12,13C15.9,13 19,14.8 19,17Z" fill="%23ff9a9e"/></svg>');
+            background-size: contain;
+            background-repeat: no-repeat;
+            z-index: 10;
+            pointer-events: none;
+            opacity: 0.8;
+        }
+        
+        /* 装饰元素 */
+        .decoration {
+            position: absolute;
+            z-index: 2;
+        }
+        
+        .mountain {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 150px;
+            background: linear-gradient(to top, rgba(139, 90, 43, 0.1) 0%, transparent 100%);
+            clip-path: polygon(0% 100%, 100% 100%, 100% 30%, 75% 50%, 50% 30%, 25% 60%, 0% 30%);
+        }
+        
+        /* 响应式调整 */
+        @media (max-width: 768px) {
+            .container {
+                flex-direction: column;
+            }
+            
+            .left-panel {
+                display: none;
+            }
+            
+            .right-panel {
+                width: 100%;
+                height: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- 粒子背景 -->
+    <div id="particles-js"></div>
+    
+    <div class="container">
+        <!-- 左侧装饰区 -->
+        <div class="left-panel">
+            <div class="mountain"></div>
+            <!-- 这里会通过JS添加樱花 -->
+        </div>
+        
+        <!-- 右侧登录区 -->
+        <div class="right-panel">
+            <div class="login-title">
+                <h2>登&nbsp;&nbsp;录</h2>
+            </div>
+            
+            <form class="login-form" method="POST" action="/login">
+                <div class="form-group">
+                    <label for="username">用户名</label>
+                    <input type="text" id="username" name="username" required placeholder="请输入用户名">
+                </div>
+                
+                <div class="form-group">
+                    <label for="password">密码</label>
+                    <input type="password" id="password" name="password" required placeholder="请输入密码">
+                </div>
+                
+                <button type="submit" class="btn">登&nbsp;&nbsp;录</button>
+                
+                <div class="links">
+                    <a href="/register">注册账号</a>
+                    <a href="/forgot">忘记密码</a>
+                </div>
+            </form>
+        </div>
+    </div>
+    
+    <!-- 粒子效果库 -->
+    <script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
+    
+    <script>
+        // 初始化粒子背景
+        document.addEventListener('DOMContentLoaded', function() {
+            particlesJS('particles-js', {
+                "particles": {
+                    "number": {
+                        "value": 80,
+                        "density": {
+                            "enable": true,
+                            "value_area": 800
+                        }
+                    },
+                    "color": {
+                        "value": "#d4b483"
+                    },
+                    "shape": {
+                        "type": "circle",
+                        "stroke": {
+                            "width": 0,
+                            "color": "#000000"
+                        },
+                        "polygon": {
+                            "nb_sides": 5
+                        }
+                    },
+                    "opacity": {
+                        "value": 0.3,
+                        "random": true,
+                        "anim": {
+                            "enable": false,
+                            "speed": 1,
+                            "opacity_min": 0.1,
+                            "sync": false
+                        }
+                    },
+                    "size": {
+                        "value": 3,
+                        "random": true,
+                        "anim": {
+                            "enable": false,
+                            "speed": 40,
+                            "size_min": 0.1,
+                            "sync": false
+                        }
+                    },
+                    "line_linked": {
+                        "enable": true,
+                        "distance": 150,
+                        "color": "#d4b483",
+                        "opacity": 0.2,
+                        "width": 1
+                    },
+                    "move": {
+                        "enable": true,
+                        "speed": 2,
+                        "direction": "none",
+                        "random": true,
+                        "straight": false,
+                        "out_mode": "out",
+                        "bounce": false,
+                        "attract": {
+                            "enable": false,
+                            "rotateX": 600,
+                            "rotateY": 1200
+                        }
+                    }
+                },
+                "interactivity": {
+                    "detect_on": "canvas",
+                    "events": {
+                        "onhover": {
+                            "enable": true,
+                            "mode": "grab"
+                        },
+                        "onclick": {
+                            "enable": true,
+                            "mode": "push"
+                        },
+                        "resize": true
+                    },
+                    "modes": {
+                        "grab": {
+                            "distance": 140,
+                            "line_linked": {
+                                "opacity": 0.5
+                            }
+                        },
+                        "bubble": {
+                            "distance": 400,
+                            "size": 40,
+                            "duration": 2,
+                            "opacity": 8,
+                            "speed": 3
+                        },
+                        "repulse": {
+                            "distance": 200,
+                            "duration": 0.4
+                        },
+                        "push": {
+                            "particles_nb": 4
+                        },
+                        "remove": {
+                            "particles_nb": 2
+                        }
+                    }
+                },
+                "retina_detect": true
+            });
+            
+            // 樱花飘落效果
+            function createSakura() {
+                const sakura = document.createElement('div');
+                sakura.className = 'sakura';
+                
+                // 随机大小
+                const size = Math.random() * 15 + 10;
+                sakura.style.width = `${size}px`;
+                sakura.style.height = `${size}px`;
+                
+                // 随机起始位置
+                sakura.style.left = `${Math.random() * 100}%`;
+                
+                // 随机动画持续时间
+                const duration = Math.random() * 10 + 10;
+                
+                // 随机动画延迟
+                const delay = Math.random() * 5;
+                
+                // 随机透明度
+                sakura.style.opacity = Math.random() * 0.5 + 0.3;
+                
+                // 应用动画
+                sakura.style.animation = `fall ${duration}s linear ${delay}s infinite`;
+                
+                document.querySelector('.left-panel').appendChild(sakura);
+                
+                // 动画结束后移除
+                setTimeout(() => {
+                    sakura.remove();
+                }, (duration + delay) * 1000);
+            }
+            
+            // 创建多个樱花
+            for (let i = 0; i < 15; i++) {
+                createSakura();
+                setTimeout(createSakura, i * 300);
+            }
+            
+            // 持续创建樱花
+            setInterval(createSakura, 2000);
+            
+            // 添加樱花飘落动画
+            const style = document.createElement('style');
+            style.innerHTML = `
+                @keyframes fall {
+                    0% {
+                        transform: translate(0, -10px) rotate(0deg);
+                    }
+                    100% {
+                        transform: translate(${Math.random() > 0.5 ? '' : '-'}${Math.random() * 100 + 50}px, 100vh) rotate(${Math.random() * 360}deg);
+                    }
+                }
+            `;
+            document.head.appendChild(style);
+        });
+    </script>
+</body>
+</html>
